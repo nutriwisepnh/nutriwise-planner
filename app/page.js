@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 
 export default function Home() {
@@ -55,7 +56,10 @@ export default function Home() {
           {recipes.map((recipe) => (
             <div
               key={recipe.id}
-              onClick={() => addToMeal("monday", "lunch", recipe)}
+              onClick={() => {
+  addToMeal("monday", "lunch", recipe);
+}}
+
               style={{
                 background: "#fff",
                 pa
