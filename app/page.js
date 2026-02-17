@@ -2,19 +2,34 @@
 
 import { useState, useMemo } from "react";
 
+const days = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday"
+];
+
+const mealTypes = ["breakfast", "lunch", "dinner", "snack"];
+
 export default function Home() {
   const [selectedMeal, setSelectedMeal] = useState("lunch");
+  const [selectedDay, setSelectedDay] = useState("monday");
 
   const [fishTarget, setFishTarget] = useState(2);
   const [fiberTarget, setFiberTarget] = useState(3);
 
-  const [week, setWeek] = useState({
-    monday: {
-      breakfast: [],
-      lunch: [],
-      dinner: [],
-      snack: []
-    }
+  const [week, setWeek] = useState(() => {
+    const initialWeek = {};
+    days.forEach((day) => {
+      initialWeek[day] = {};
+      mealTypes.forEach((meal) => {
+        initialWeek[day][meal] = [];
+      });
+    });
+    return initialWeek;
   });
 
   const recipes = [
@@ -70,7 +85,11 @@ export default function Home() {
     (recipe) => recipe.category === selectedMeal
   );
 
-  const allMeals = Object.values(week.monday).flat();
+  // --------- REGELS OVER HELE WEEK ---------
+
+  const allMeals = Object.values(week)
+    .flatMap((day) => Object.values(day))
+    .flat();
 
   const fishCount = useMemo(() => {
     return allMeals.filter((item) =>
@@ -108,6 +127,11 @@ export default function Home() {
         <div style={cardStyle("#FCE8A8")}>
           <h2>🍽 Recepten</h2>
 
+          <DaySelector
+            selected={selectedDay}
+            onSelect={setSelectedDay}
+          />
+
           <MealSelector
             selected={selectedMeal}
             onSelect={setSelectedMeal}
@@ -117,7 +141,7 @@ export default function Home() {
             <div
               key={recipe.id}
               onClick={() =>
-                addToMeal("monday", selectedMeal, recipe)
+                addToMeal(selectedDay, selectedMeal, recipe)
               }
               style={recipeCard}
             >
@@ -136,23 +160,31 @@ export default function Home() {
 
         {/* Weekplanner */}
         <div style={cardStyle("#FFFFFF")}>
-          <h2>📅 Maandag</h2>
+          <h2>📅 Weekoverzicht</h2>
 
-          {Object.keys(week.monday).map((meal) => (
-            <MealBlock
-              key={meal}
-              title={meal}
-              items={week.monday[meal]}
-              onRemove={(index) =>
-                removeFromMeal("monday", meal, index)
-              }
-            />
+          {days.map((day) => (
+            <div key={day} style={{ marginBottom: "30px" }}>
+              <h3 style={{ textTransform: "capitalize" }}>
+                {day}
+              </h3>
+
+              {mealTypes.map((meal) => (
+                <MealBlock
+                  key={meal}
+                  title={meal}
+                  items={week[day][meal]}
+                  onRemove={(index) =>
+                    removeFromMeal(day, meal, index)
+                  }
+                />
+              ))}
+            </div>
           ))}
         </div>
 
         {/* Regels */}
         <div style={cardStyle("#E7F3EC")}>
-          <h2>✅ Regels</h2>
+          <h2>✅ Regels (hele week)</h2>
 
           {rules.map((rule, index) => {
             const met = rule.current >= rule.target;
@@ -196,18 +228,43 @@ export default function Home() {
   );
 }
 
-function MealSelector({ selected, onSelect }) {
-  const meals = ["breakfast", "lunch", "dinner", "snack"];
+function DaySelector({ selected, onSelect }) {
+  return (
+    <div style={{ marginBottom: "10px" }}>
+      {days.map((day) => (
+        <button
+          key={day}
+          onClick={() => onSelect(day)}
+          style={{
+            marginRight: "6px",
+            marginBottom: "6px",
+            padding: "6px 8px",
+            borderRadius: "8px",
+            border: "none",
+            cursor: "pointer",
+            background:
+              selected === day ? "#4F7D5C" : "#ddd",
+            color:
+              selected === day ? "#fff" : "#333"
+          }}
+        >
+          {day}
+        </button>
+      ))}
+    </div>
+  );
+}
 
+function MealSelector({ selected, onSelect }) {
   return (
     <div style={{ marginBottom: "15px" }}>
-      {meals.map((meal) => (
+      {mealTypes.map((meal) => (
         <button
           key={meal}
           onClick={() => onSelect(meal)}
           style={{
-            marginRight: "8px",
-            padding: "6px 10px",
+            marginRight: "6px",
+            padding: "6px 8px",
             borderRadius: "8px",
             border: "none",
             cursor: "pointer",
@@ -311,8 +368,8 @@ const tagStyle = {
 };
 
 const mealBlockStyle = {
-  marginBottom: "20px",
-  padding: "15px",
+  marginBottom: "15px",
+  padding: "12px",
   background: "#E7F3EC",
   borderRadius: "12px"
 };
