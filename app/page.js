@@ -5,6 +5,9 @@ import { useState, useMemo } from "react";
 export default function Home() {
   const [selectedMeal, setSelectedMeal] = useState("lunch");
 
+  const [fishTarget, setFishTarget] = useState(2);
+  const [fiberTarget, setFiberTarget] = useState(3);
+
   const [week, setWeek] = useState({
     monday: {
       breakfast: [],
@@ -83,14 +86,16 @@ export default function Home() {
 
   const rules = [
     {
-      label: "Minimaal 2x vis",
+      label: "Min vis",
       current: fishCount,
-      target: 2
+      target: fishTarget,
+      setter: setFishTarget
     },
     {
-      label: "Minimaal 3x vezelrijk",
+      label: "Min vezelrijk",
       current: fiberCount,
-      target: 3
+      target: fiberTarget,
+      setter: setFiberTarget
     }
   ];
 
@@ -156,15 +161,31 @@ export default function Home() {
               <div
                 key={index}
                 style={{
-                  marginBottom: "12px",
-                  padding: "10px",
+                  marginBottom: "15px",
+                  padding: "12px",
                   borderRadius: "10px",
                   background: met ? "#D4EDDA" : "#F8D7DA"
                 }}
               >
                 <strong>{rule.label}</strong>
-                <div>
-                  {rule.current} / {rule.target}
+
+                <div style={{ marginTop: "6px" }}>
+                  {rule.current} /{" "}
+                  <input
+                    type="number"
+                    value={rule.target}
+                    min="0"
+                    onChange={(e) =>
+                      rule.setter(Number(e.target.value))
+                    }
+                    style={{
+                      width: "50px",
+                      marginLeft: "5px",
+                      borderRadius: "6px",
+                      border: "1px solid #ccc",
+                      padding: "2px"
+                    }}
+                  />
                 </div>
               </div>
             );
