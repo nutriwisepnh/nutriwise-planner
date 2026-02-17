@@ -52,23 +52,20 @@ export default function Home() {
   }
 
   function removeFromMeal(day, meal, indexToRemove) {
-  setWeek((prev) => ({
-    ...prev,
-    [day]: {
-      ...prev[day],
-      [meal]: prev[day][meal].filter(
-        (_, index) => index !== indexToRemove
-      )
-    }
-  }));
-}
-
+    setWeek((prev) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [meal]: prev[day][meal].filter(
+          (_, index) => index !== indexToRemove
+        )
+      }
+    }));
+  }
 
   const filteredRecipes = recipes.filter(
     (recipe) => recipe.category === selectedMeal
   );
-
-  // --------- REGELS BEREKENING ---------
 
   const allMeals = Object.values(week.monday).flat();
 
@@ -141,6 +138,9 @@ export default function Home() {
               key={meal}
               title={meal}
               items={week.monday[meal]}
+              onRemove={(index) =>
+                removeFromMeal("monday", meal, index)
+              }
             />
           ))}
         </div>
@@ -245,7 +245,6 @@ function MealBlock({ title, items, onRemove }) {
     </div>
   );
 }
-
 
 const mainStyle = {
   fontFamily: "system-ui, -apple-system, sans-serif",
