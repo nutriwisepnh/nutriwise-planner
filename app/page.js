@@ -20,55 +20,65 @@ export default function Home() {
   ];
 
   function addToMeal(day, meal, recipe) {
-    setWeek((prev) => ({
-      ...prev,
-      [day]: {
-        ...prev[day],
-        [meal]: [...prev[day][meal], recipe]
-      }
-    }));
+    setWeek((prev) => {
+      return {
+        ...prev,
+        [day]: {
+          ...prev[day],
+          [meal]: [...prev[day][meal], recipe]
+        }
+      };
+    });
   }
 
   return (
-    <main style={{
-      fontFamily: "system-ui, -apple-system, sans-serif",
-      backgroundColor: "#F4F8F5",
-      minHeight: "100vh",
-      padding: "40px"
-    }}>
+    <main
+      style={{
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        backgroundColor: "#F4F8F5",
+        minHeight: "100vh",
+        padding: "40px"
+      }}
+    >
       <h1 style={{ color: "#4F7D5C", fontSize: "40px" }}>
         Nutriwise Planner 🌿
       </h1>
 
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 2fr",
-        gap: "30px",
-        marginTop: "40px"
-      }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 2fr",
+          gap: "30px",
+          marginTop: "40px"
+        }}
+      >
+        {/* Recepten */}
         <div style={cardStyle("#FCE8A8")}>
           <h2>🍽 Recepten</h2>
 
-          {recipes.map((recipe) => (
-            <div
-              key={recipe.id}
-              onClick={() => {
-                addToMeal("monday", "lunch", recipe);
-              }}
-              style={{
-                background: "#fff",
-                padding: "12px",
-                borderRadius: "10px",
-                marginBottom: "10px",
-                cursor: "pointer",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.05)"
-              }}
-            >
-              {recipe.name}
-            </div>
-          ))}
+          {recipes.map((recipe) => {
+            return (
+              <div
+                key={recipe.id}
+                onClick={() => {
+                  addToMeal("monday", "lunch", recipe);
+                }}
+                style={{
+                  background: "#fff",
+                  padding: "12px",
+                  borderRadius: "10px",
+                  marginBottom: "10px",
+                  cursor: "pointer",
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.05)"
+                }}
+              >
+                {recipe.name}
+              </div>
+            );
+          })}
         </div>
 
+        {/* Weekplanner */}
         <div style={cardStyle("#FFFFFF")}>
           <h2>📅 Maandag</h2>
 
@@ -85,13 +95,51 @@ export default function Home() {
 
 function MealBlock({ title, items }) {
   return (
-    <div style={{
-      marginBottom: "20px",
-      padding: "15px",
-      background: "#E7F3EC",
-      borderRadius: "12px"
-    }}>
+    <div
+      style={{
+        marginBottom: "20px",
+        padding: "15px",
+        background: "#E7F3EC",
+        borderRadius: "12px"
+      }}
+    >
       <strong>{title}</strong>
 
-      {items.length === 0 && (
-        <p style={{ color:
+      {items.length === 0 ? (
+        <p
+          style={{
+            color: "#999",
+            fontSize: "14px"
+          }}
+        >
+          Nog niets toegevoegd.
+        </p>
+      ) : (
+        items.map((item, index) => {
+          return (
+            <div
+              key={index}
+              style={{
+                background: "#fff",
+                padding: "8px",
+                borderRadius: "8px",
+                marginTop: "6px"
+              }}
+            >
+              {item.name}
+            </div>
+          );
+        })
+      )}
+    </div>
+  );
+}
+
+function cardStyle(bg) {
+  return {
+    backgroundColor: bg,
+    padding: "20px",
+    borderRadius: "16px",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.05)"
+  };
+}
