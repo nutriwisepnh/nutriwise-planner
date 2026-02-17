@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 export default function Home() {
   const [selectedMeal, setSelectedMeal] = useState("lunch");
@@ -55,6 +55,35 @@ export default function Home() {
     (recipe) => recipe.category === selectedMeal
   );
 
+  // --------- REGELS BEREKENING ---------
+
+  const allMeals = Object.values(week.monday).flat();
+
+  const fishCount = useMemo(() => {
+    return allMeals.filter((item) =>
+      item.tags.includes("vis")
+    ).length;
+  }, [allMeals]);
+
+  const fiberCount = useMemo(() => {
+    return allMeals.filter((item) =>
+      item.tags.includes("vezelrijk")
+    ).length;
+  }, [allMeals]);
+
+  const rules = [
+    {
+      label: "Minimaal 2x vis",
+      current: fishCount,
+      target: 2
+    },
+    {
+      label: "Minimaal 3x vezelrijk",
+      current: fiberCount,
+      target: 3
+    }
+  ];
+
   return (
     <main style={mainStyle}>
       <h1 style={titleStyle}>Nutriwise Planner 🌿</h1>
@@ -101,6 +130,32 @@ export default function Home() {
               items={week.monday[meal]}
             />
           ))}
+        </div>
+
+        {/* Regels */}
+        <div style={cardStyle("#E7F3EC")}>
+          <h2>✅ Regels</h2>
+
+          {rules.map((rule, index) => {
+            const met = rule.current >= rule.target;
+
+            return (
+              <div
+                key={index}
+                style={{
+                  marginBottom: "12px",
+                  padding: "10px",
+                  borderRadius: "10px",
+                  background: met ? "#D4EDDA" : "#F8D7DA"
+                }}
+              >
+                <strong>{rule.label}</strong>
+                <div>
+                  {rule.current} / {rule.target}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </main>
@@ -171,7 +226,7 @@ const titleStyle = {
 
 const gridStyle = {
   display: "grid",
-  gridTemplateColumns: "1fr 2fr",
+  gridTemplateColumns: "1fr 2fr 1fr",
   gap: "30px",
   marginTop: "40px"
 };
