@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 export default function Home() {
-
   const [week, setWeek] = useState({
     monday: {
       breakfast: [],
@@ -21,7 +20,7 @@ export default function Home() {
   ];
 
   function addToMeal(day, meal, recipe) {
-    setWeek(prev => ({
+    setWeek((prev) => ({
       ...prev,
       [day]: {
         ...prev[day],
@@ -37,7 +36,6 @@ export default function Home() {
       minHeight: "100vh",
       padding: "40px"
     }}>
-
       <h1 style={{ color: "#4F7D5C", fontSize: "40px" }}>
         Nutriwise Planner 🌿
       </h1>
@@ -48,8 +46,6 @@ export default function Home() {
         gap: "30px",
         marginTop: "40px"
       }}>
-
-        {/* Recepten */}
         <div style={cardStyle("#FCE8A8")}>
           <h2>🍽 Recepten</h2>
 
@@ -57,9 +53,45 @@ export default function Home() {
             <div
               key={recipe.id}
               onClick={() => {
-  addToMeal("monday", "lunch", recipe);
-}}
-
+                addToMeal("monday", "lunch", recipe);
+              }}
               style={{
                 background: "#fff",
-                pa
+                padding: "12px",
+                borderRadius: "10px",
+                marginBottom: "10px",
+                cursor: "pointer",
+                boxShadow: "0 4px 10px rgba(0,0,0,0.05)"
+              }}
+            >
+              {recipe.name}
+            </div>
+          ))}
+        </div>
+
+        <div style={cardStyle("#FFFFFF")}>
+          <h2>📅 Maandag</h2>
+
+          <MealBlock title="Ontbijt" items={week.monday.breakfast} />
+          <MealBlock title="Lunch" items={week.monday.lunch} />
+          <MealBlock title="Diner" items={week.monday.dinner} />
+          <MealBlock title="Snack 1" items={week.monday.snack1} />
+          <MealBlock title="Snack 2" items={week.monday.snack2} />
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function MealBlock({ title, items }) {
+  return (
+    <div style={{
+      marginBottom: "20px",
+      padding: "15px",
+      background: "#E7F3EC",
+      borderRadius: "12px"
+    }}>
+      <strong>{title}</strong>
+
+      {items.length === 0 && (
+        <p style={{ color:
