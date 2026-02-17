@@ -51,6 +51,19 @@ export default function Home() {
     }));
   }
 
+  function removeFromMeal(day, meal, indexToRemove) {
+  setWeek((prev) => ({
+    ...prev,
+    [day]: {
+      ...prev[day],
+      [meal]: prev[day][meal].filter(
+        (_, index) => index !== indexToRemove
+      )
+    }
+  }));
+}
+
+
   const filteredRecipes = recipes.filter(
     (recipe) => recipe.category === selectedMeal
   );
@@ -190,7 +203,7 @@ function MealSelector({ selected, onSelect }) {
   );
 }
 
-function MealBlock({ title, items }) {
+function MealBlock({ title, items, onRemove }) {
   return (
     <div style={mealBlockStyle}>
       <strong style={{ textTransform: "capitalize" }}>
@@ -203,14 +216,36 @@ function MealBlock({ title, items }) {
         </p>
       ) : (
         items.map((item, index) => (
-          <div key={index} style={mealItemStyle}>
-            {item.name}
+          <div
+            key={index}
+            style={{
+              ...mealItemStyle,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}
+          >
+            <span>{item.name}</span>
+
+            <button
+              onClick={() => onRemove(index)}
+              style={{
+                background: "#f8d7da",
+                border: "none",
+                borderRadius: "6px",
+                cursor: "pointer",
+                padding: "4px 8px"
+              }}
+            >
+              ✕
+            </button>
           </div>
         ))
       )}
     </div>
   );
 }
+
 
 const mainStyle = {
   fontFamily: "system-ui, -apple-system, sans-serif",
