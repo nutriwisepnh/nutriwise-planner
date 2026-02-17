@@ -15,8 +15,9 @@ const days = [
 const mealTypes = ["breakfast", "lunch", "dinner", "snack"];
 
 export default function Home() {
-  const [selectedMeal, setSelectedMeal] = useState("lunch");
+  const [viewMode, setViewMode] = useState("planner");
   const [selectedDay, setSelectedDay] = useState("monday");
+  const [selectedMeal, setSelectedMeal] = useState("lunch");
 
   const [fishTarget, setFishTarget] = useState(2);
   const [fiberTarget, setFiberTarget] = useState(3);
@@ -85,8 +86,6 @@ export default function Home() {
     (recipe) => recipe.category === selectedMeal
   );
 
-  // --------- REGELS OVER HELE WEEK ---------
-
   const allMeals = Object.values(week)
     .flatMap((day) => Object.values(day))
     .flat();
@@ -146,7 +145,6 @@ export default function Home() {
               style={recipeCard}
             >
               <strong>{recipe.name}</strong>
-
               <div style={{ marginTop: "6px" }}>
                 {recipe.tags.map((tag, i) => (
                   <span key={i} style={tagStyle}>
@@ -160,26 +158,90 @@ export default function Home() {
 
         {/* Weekplanner */}
         <div style={cardStyle("#FFFFFF")}>
-          <h2>📅 Weekoverzicht</h2>
+          <h2>📅 Weekplanner</h2>
 
-          {days.map((day) => (
-            <div key={day} style={{ marginBottom: "30px" }}>
+          {/* View Toggle */}
+          <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+            <button
+              onClick={() => setViewMode("planner")}
+              style={{
+                padding: "8px 12px",
+                borderRadius: "10px",
+                border: "none",
+                cursor: "pointer",
+                background:
+                  viewMode === "planner" ? "#4F7D5C" : "#E0E0E0",
+                color:
+                  viewMode === "planner" ? "#fff" : "#333"
+              }}
+            >
+              Planner
+            </button>
+
+            <button
+              onClick={() => setViewMode("overview")}
+              style={{
+                padding: "8px 12px",
+                borderRadius: "10px",
+                border: "none",
+                cursor: "pointer",
+                background:
+                  viewMode === "overview" ? "#4F7D5C" : "#E0E0E0",
+                color:
+                  viewMode === "overview" ? "#fff" : "#333"
+              }}
+            >
+              Weekoverzicht
+            </button>
+          </div>
+
+          {viewMode === "planner" ? (
+            <>
               <h3 style={{ textTransform: "capitalize" }}>
-                {day}
+                {selectedDay}
               </h3>
 
               {mealTypes.map((meal) => (
                 <MealBlock
                   key={meal}
                   title={meal}
-                  items={week[day][meal]}
+                  items={week[selectedDay][meal]}
                   onRemove={(index) =>
-                    removeFromMeal(day, meal, index)
+                    removeFromMeal(selectedDay, meal, index)
                   }
                 />
               ))}
+            </>
+          ) : (
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    <th style={thStyle}></th>
+                    {mealTypes.map((meal) => (
+                      <th key={meal} style={thStyle}>
+                        {meal}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {days.map((day) => (
+                    <tr key={day}>
+                      <td style={tdStyle}>{day.slice(0,2)}</td>
+                      {mealTypes.map((meal) => (
+                        <td key={meal} style={tdStyle}>
+                          {week[day][meal].map((item, i) => (
+                            <div key={i}>{item.name}</div>
+                          ))}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ))}
+          )}
         </div>
 
         {/* Regels */}
@@ -200,7 +262,6 @@ export default function Home() {
                 }}
               >
                 <strong>{rule.label}</strong>
-
                 <div style={{ marginTop: "6px" }}>
                   {rule.current} /{" "}
                   <input
@@ -228,6 +289,8 @@ export default function Home() {
   );
 }
 
+/* ---------- COMPONENTS ---------- */
+
 function DaySelector({ selected, onSelect }) {
   return (
     <div style={{ marginBottom: "10px" }}>
@@ -248,7 +311,7 @@ function DaySelector({ selected, onSelect }) {
               selected === day ? "#fff" : "#333"
           }}
         >
-          {day}
+          {day.slice(0,2)}
         </button>
       ))}
     </div>
@@ -304,7 +367,6 @@ function MealBlock({ title, items, onRemove }) {
             }}
           >
             <span>{item.name}</span>
-
             <button
               onClick={() => onRemove(index)}
               style={{
@@ -323,6 +385,8 @@ function MealBlock({ title, items, onRemove }) {
     </div>
   );
 }
+
+/* ---------- STYLES ---------- */
 
 const mainStyle = {
   fontFamily: "system-ui, -apple-system, sans-serif",
@@ -379,4 +443,16 @@ const mealItemStyle = {
   padding: "8px",
   borderRadius: "8px",
   marginTop: "6px"
+};
+
+const thStyle = {
+  borderBottom: "1px solid #ddd",
+  padding: "8px",
+  textAlign: "left"
+};
+
+const tdStyle = {
+  borderBottom: "1px solid #eee",
+  padding: "8px",
+  verticalAlign: "top"
 };
