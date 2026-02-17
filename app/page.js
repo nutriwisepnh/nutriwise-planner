@@ -2,7 +2,16 @@
 import { useState } from "react";
 
 export default function Home() {
-  const [mondayLunch, setMondayLunch] = useState([]);
+
+  const [week, setWeek] = useState({
+    monday: {
+      breakfast: [],
+      lunch: [],
+      dinner: [],
+      snack1: [],
+      snack2: []
+    }
+  });
 
   const recipes = [
     { id: 1, name: "Zalm salade 🐟" },
@@ -10,8 +19,14 @@ export default function Home() {
     { id: 3, name: "Groente omelet 🍳" }
   ];
 
-  function addToMonday(recipe) {
-    setMondayLunch([...mondayLunch, recipe]);
+  function addToMeal(day, meal, recipe) {
+    setWeek(prev => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [meal]: [...prev[day][meal], recipe]
+      }
+    }));
   }
 
   return (
@@ -40,61 +55,7 @@ export default function Home() {
           {recipes.map((recipe) => (
             <div
               key={recipe.id}
-              onClick={() => addToMonday(recipe)}
+              onClick={() => addToMeal("monday", "lunch", recipe)}
               style={{
                 background: "#fff",
-                padding: "12px",
-                borderRadius: "10px",
-                marginBottom: "10px",
-                cursor: "pointer",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.05)"
-              }}
-            >
-              {recipe.name}
-            </div>
-          ))}
-
-          <p style={{ fontSize: "12px", marginTop: "15px" }}>
-            Klik om toe te voegen aan maandag lunch.
-          </p>
-        </div>
-
-        {/* Weekplanner */}
-        <div style={cardStyle("#FFFFFF")}>
-          <h2>📅 Maandag – Lunch</h2>
-
-          {mondayLunch.length === 0 && (
-            <p style={{ color: "#999" }}>
-              Nog niets toegevoegd.
-            </p>
-          )}
-
-          {mondayLunch.map((item, index) => (
-            <div
-              key={index}
-              style={{
-                background: "#E7F3EC",
-                padding: "10px",
-                borderRadius: "8px",
-                marginBottom: "8px"
-              }}
-            >
-              {item.name}
-            </div>
-          ))}
-        </div>
-
-      </div>
-
-    </main>
-  );
-}
-
-function cardStyle(bg) {
-  return {
-    backgroundColor: bg,
-    padding: "20px",
-    borderRadius: "16px",
-    boxShadow: "0 8px 20px rgba(0,0,0,0.05)"
-  };
-}
+                pa
