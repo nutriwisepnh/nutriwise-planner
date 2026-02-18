@@ -4,6 +4,8 @@ import { useState } from "react";
 import RecipePanel from "./components/RecipePanel";
 import PlannerPanel from "./components/PlannerPanel";
 import RulesPanel from "./components/RulesPanel";
+import { initialTags } from "./data/tags";
+
 
 const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
 const mealTypes = ["breakfast","lunch","dinner","snack"];
@@ -14,10 +16,7 @@ export default function Home() {
   const [selectedDay,setSelectedDay] = useState("monday");
   const [selectedMeal,setSelectedMeal] = useState("lunch");
 
-  const [rules,setRules] = useState([
-    { id:1, tag:"vis", type:"min", target:2 },
-    { id:2, tag:"vezelrijk", type:"min", target:3 }
-  ]);
+  const [availableTags, setAvailableTags] = useState(initialTags);
 
   const [newTag,setNewTag] = useState("");
   const [newType,setNewType] = useState("min");
