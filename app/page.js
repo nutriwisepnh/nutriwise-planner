@@ -1,5 +1,8 @@
 "use client";
 
+import RecipePanel from "./components/RecipePanel";
+
+
 import { useState, useMemo } from "react";
 
 const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
@@ -89,19 +92,17 @@ export default function Home() {
 
       <div style={gridStyle}>
 
-        {/* Recepten */}
-        <div style={cardStyle("#FCE8A8")}>
-          <h2>Recepten</h2>
+     <RecipePanel
+  days={days}
+  mealTypes={mealTypes}
+  selectedDay={selectedDay}
+  setSelectedDay={setSelectedDay}
+  selectedMeal={selectedMeal}
+  setSelectedMeal={setSelectedMeal}
+  filteredRecipes={filteredRecipes}
+  addToMeal={addToMeal}
+/>
 
-          <div style={{marginBottom:"10px"}}>
-            {days.map(d=>(
-              <button key={d}
-                onClick={()=>setSelectedDay(d)}
-                style={tabStyle(selectedDay===d)}>
-                {d.slice(0,2)}
-              </button>
-            ))}
-          </div>
 
           <div style={{marginBottom:"10px"}}>
             {mealTypes.map(m=>(
