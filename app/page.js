@@ -3,6 +3,7 @@
 import { useState } from "react";
 import RecipePanel from "./components/RecipePanel";
 import PlannerPanel from "./components/PlannerPanel";
+import RulesPanel from "./components/RulesPanel";
 
 const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
 const mealTypes = ["breakfast","lunch","dinner","snack"];
@@ -94,7 +95,6 @@ export default function Home() {
 
       <div style={gridStyle}>
 
-        {/* Recipe Panel */}
         <RecipePanel
           days={days}
           mealTypes={mealTypes}
@@ -106,7 +106,6 @@ export default function Home() {
           addToMeal={addToMeal}
         />
 
-        {/* Planner Panel */}
         <PlannerPanel
           viewMode={viewMode}
           setViewMode={setViewMode}
@@ -119,24 +118,25 @@ export default function Home() {
         />
 
         <RulesPanel
-  rules={rules}
-  countTag={countTag}
-  removeRule={removeRule}
-  newTag={newTag}
-  setNewTag={setNewTag}
-  newType={newType}
-  setNewType={setNewType}
-  newTarget={newTarget}
-  setNewTarget={setNewTarget}
-  addRule={addRule}
-/>
+          rules={rules}
+          countTag={countTag}
+          removeRule={removeRule}
+          newTag={newTag}
+          setNewTag={setNewTag}
+          newType={newType}
+          setNewType={setNewType}
+          newTarget={newTarget}
+          setNewTarget={setNewTarget}
+          addRule={addRule}
+        />
 
+      </div>
+    </main>
+  );
+}
 
 /* styles */
 
 const mainStyle={padding:"40px",fontFamily:"system-ui"};
 const titleStyle={fontSize:"40px",color:"#4F7D5C"};
 const gridStyle={display:"grid",gridTemplateColumns:"1fr 2fr 1fr",gap:"30px"};
-const cardStyle=(bg)=>({background:bg,padding:"20px",borderRadius:"16px"});
-const inputStyle={width:"100%",marginBottom:"6px",padding:"4px"};
-const addButtonStyle={padding:"6px",borderRadius:"6px",border:"none",background:"#4F7D5C",color:"#fff"};
