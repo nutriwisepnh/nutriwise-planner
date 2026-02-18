@@ -1,14 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import RecipePanel from "./components/RecipePanel";
-
-
-import { useState, useMemo } from "react";
 
 const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
 const mealTypes = ["breakfast","lunch","dinner","snack"];
 
 export default function Home() {
+
   const [viewMode,setViewMode] = useState("planner");
   const [selectedDay,setSelectedDay] = useState("monday");
   const [selectedMeal,setSelectedMeal] = useState("lunch");
@@ -72,12 +71,14 @@ export default function Home() {
 
   function addRule(){
     if(!newTag) return;
+
     setRules([...rules,{
       id:Date.now(),
       tag:newTag.toLowerCase(),
       type:newType,
       target:Number(newTarget)
     }]);
+
     setNewTag("");
     setNewTarget(1);
   }
@@ -92,49 +93,42 @@ export default function Home() {
 
       <div style={gridStyle}>
 
-     <RecipePanel
-  days={days}
-  mealTypes={mealTypes}
-  selectedDay={selectedDay}
-  setSelectedDay={setSelectedDay}
-  selectedMeal={selectedMeal}
-  setSelectedMeal={setSelectedMeal}
-  filteredRecipes={filteredRecipes}
-  addToMeal={addToMeal}
-/>
-
-
-          <div style={{marginBottom:"10px"}}>
-            {mealTypes.map(m=>(
-              <button key={m}
-                onClick={()=>setSelectedMeal(m)}
-                style={tabStyle(selectedMeal===m)}>
-                {m}
-              </button>
-            ))}
-          </div>
-
-          {filteredRecipes.map(r=>(
-            <div key={r.id}
-              onClick={()=>addToMeal(selectedDay,selectedMeal,r)}
-              style={recipeCard}>
-              {r.name}
-            </div>
-          ))}
-        </div>
+        {/* Recipe Panel */}
+        <RecipePanel
+          days={days}
+          mealTypes={mealTypes}
+          selectedDay={selectedDay}
+          setSelectedDay={setSelectedDay}
+          selectedMeal={selectedMeal}
+          setSelectedMeal={setSelectedMeal}
+          filteredRecipes={filteredRecipes}
+          addToMeal={addToMeal}
+        />
 
         {/* Weekplanner */}
         <div style={cardStyle("#fff")}>
           <h2>Weekplanner</h2>
 
           <div style={{marginBottom:"15px"}}>
-            <button onClick={()=>setViewMode("planner")} style={tabStyle(viewMode==="planner")}>Planner</button>
-            <button onClick={()=>setViewMode("overview")} style={tabStyle(viewMode==="overview")}>Overzicht</button>
+            <button
+              onClick={()=>setViewMode("planner")}
+              style={tabStyle(viewMode==="planner")}
+            >
+              Planner
+            </button>
+
+            <button
+              onClick={()=>setViewMode("overview")}
+              style={tabStyle(viewMode==="overview")}
+            >
+              Overzicht
+            </button>
           </div>
 
           {viewMode==="planner" ? (
             <>
               <h3>{selectedDay}</h3>
+
               {mealTypes.map(m=>(
                 <MealBlock
                   key={m}
@@ -143,6 +137,7 @@ export default function Home() {
                   onRemove={(i)=>removeFromMeal(selectedDay,m,i)}
                 />
               ))}
+
             </>
           ):(
             <table style={{width:"100%"}}>
@@ -176,21 +171,26 @@ export default function Home() {
 
           {rules.map(rule=>{
             const count = countTag(rule.tag);
+
             const met = rule.type==="min"
               ? count>=rule.target
               : count<=rule.target;
 
             return(
-              <div key={rule.id}
+              <div
+                key={rule.id}
                 style={{
                   padding:"8px",
                   marginBottom:"8px",
                   borderRadius:"8px",
                   background:met?"#D4EDDA":"#F8D7DA"
-                }}>
+                }}
+              >
                 {rule.type==="min"?"Min":"Max"} {rule.tag}
                 <div>{count}/{rule.target}</div>
-                <button onClick={()=>removeRule(rule.id)}>Verwijderen</button>
+                <button onClick={()=>removeRule(rule.id)}>
+                  Verwijderen
+                </button>
               </div>
             );
           })}
@@ -207,7 +207,8 @@ export default function Home() {
           <select
             value={newType}
             onChange={e=>setNewType(e.target.value)}
-            style={inputStyle}>
+            style={inputStyle}
+          >
             <option value="min">Minimaal</option>
             <option value="max">Maximaal</option>
           </select>
@@ -233,6 +234,13 @@ function MealBlock({title,items,onRemove}){
   return(
     <div style={mealBlockStyle}>
       <strong>{title}</strong>
+
+      {items.length===0 && (
+        <div style={{opacity:0.5,fontSize:"12px"}}>
+          Nog niets toegevoegd
+        </div>
+      )}
+
       {items.map((item,i)=>(
         <div key={i} style={mealItemStyle}>
           {item.name}
@@ -249,7 +257,6 @@ const mainStyle={padding:"40px",fontFamily:"system-ui"};
 const titleStyle={fontSize:"40px",color:"#4F7D5C"};
 const gridStyle={display:"grid",gridTemplateColumns:"1fr 2fr 1fr",gap:"30px"};
 const cardStyle=(bg)=>({background:bg,padding:"20px",borderRadius:"16px"});
-const recipeCard={background:"#fff",padding:"8px",marginBottom:"6px",cursor:"pointer"};
 const mealBlockStyle={background:"#E7F3EC",padding:"8px",marginBottom:"8px",borderRadius:"8px"};
 const mealItemStyle={display:"flex",justifyContent:"space-between",background:"#fff",marginTop:"4px",padding:"4px",borderRadius:"6px"};
 const tabStyle=(active)=>({marginRight:"6px",padding:"6px 8px",border:"none",borderRadius:"8px",cursor:"pointer",background:active?"#4F7D5C":"#ddd",color:active?"#fff":"#000"});
