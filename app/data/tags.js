@@ -1,10 +1,6 @@
 export const initialTags = [
-  "vis",
-  "vezelrijk",
-  "eiwitrijk",
-  "vegetarisch",
-  "cholesterol +",
-  "cholesterol -",
-  "Afvallen",
-  "havermout",
+  { name: "vis", type: "ingredient" },
+  { name: "vezelrijk", type: "health" },
+  { name: "eiwitrijk", type: "health" },
+  { name: "vegetarisch", type: "lifestyle" }
 ];
