@@ -118,70 +118,19 @@ export default function Home() {
           setSelectedDay={setSelectedDay}
         />
 
-        {/* Regels */}
-        <div style={cardStyle("#E7F3EC")}>
-          <h2>Regels</h2>
+        <RulesPanel
+  rules={rules}
+  countTag={countTag}
+  removeRule={removeRule}
+  newTag={newTag}
+  setNewTag={setNewTag}
+  newType={newType}
+  setNewType={setNewType}
+  newTarget={newTarget}
+  setNewTarget={setNewTarget}
+  addRule={addRule}
+/>
 
-          {rules.map(rule=>{
-            const count = countTag(rule.tag);
-
-            const met = rule.type==="min"
-              ? count>=rule.target
-              : count<=rule.target;
-
-            return(
-              <div
-                key={rule.id}
-                style={{
-                  padding:"8px",
-                  marginBottom:"8px",
-                  borderRadius:"8px",
-                  background:met?"#D4EDDA":"#F8D7DA"
-                }}
-              >
-                {rule.type==="min"?"Min":"Max"} {rule.tag}
-                <div>{count}/{rule.target}</div>
-                <button onClick={()=>removeRule(rule.id)}>
-                  Verwijderen
-                </button>
-              </div>
-            );
-          })}
-
-          <hr/>
-
-          <input
-            placeholder="tag"
-            value={newTag}
-            onChange={e=>setNewTag(e.target.value)}
-            style={inputStyle}
-          />
-
-          <select
-            value={newType}
-            onChange={e=>setNewType(e.target.value)}
-            style={inputStyle}
-          >
-            <option value="min">Minimaal</option>
-            <option value="max">Maximaal</option>
-          </select>
-
-          <input
-            type="number"
-            value={newTarget}
-            onChange={e=>setNewTarget(e.target.value)}
-            style={inputStyle}
-          />
-
-          <button onClick={addRule} style={addButtonStyle}>
-            Regel toevoegen
-          </button>
-        </div>
-
-      </div>
-    </main>
-  );
-}
 
 /* styles */
 
