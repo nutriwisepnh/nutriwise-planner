@@ -6,8 +6,7 @@ import PlannerPanel from "./components/PlannerPanel";
 import RulesPanel from "./components/RulesPanel";
 import { initialTags } from "./data/tags";
 
-
-const days = ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"];
+const days = ["monday","tuesday","thursday","wednesday","friday","saturday","sunday"];
 const mealTypes = ["breakfast","lunch","dinner","snack"];
 
 export default function Home() {
@@ -16,7 +15,12 @@ export default function Home() {
   const [selectedDay,setSelectedDay] = useState("monday");
   const [selectedMeal,setSelectedMeal] = useState("lunch");
 
-  const [availableTags, setAvailableTags] = useState(initialTags);
+  const [availableTags,setAvailableTags] = useState(initialTags);
+
+  const [rules,setRules] = useState([
+    { id:1, tag:"vis", type:"min", target:2 },
+    { id:2, tag:"vezelrijk", type:"min", target:3 }
+  ]);
 
   const [newTag,setNewTag] = useState("");
   const [newType,setNewType] = useState("min");
@@ -73,19 +77,28 @@ export default function Home() {
   function addRule(){
     if(!newTag) return;
 
-    setRules([...rules,{
-      id:Date.now(),
-      tag:newTag.toLowerCase(),
-      type:newType,
-      target:Number(newTarget)
-    }]);
+    const tagLower = newTag.toLowerCase();
+
+    if(!availableTags.includes(tagLower)){
+      setAvailableTags(prev=>[...prev,tagLower]);
+    }
+
+    setRules(prev=>[
+      ...prev,
+      {
+        id:Date.now(),
+        tag:tagLower,
+        type:newType,
+        target:Number(newTarget)
+      }
+    ]);
 
     setNewTag("");
     setNewTarget(1);
   }
 
   function removeRule(id){
-    setRules(rules.filter(r=>r.id!==id));
+    setRules(prev=>prev.filter(r=>r.id!==id));
   }
 
   return(
@@ -127,6 +140,7 @@ export default function Home() {
           newTarget={newTarget}
           setNewTarget={setNewTarget}
           addRule={addRule}
+          availableTags={availableTags}
         />
 
       </div>
