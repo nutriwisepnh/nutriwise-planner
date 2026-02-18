@@ -79,9 +79,16 @@ export default function Home() {
 
     const tagLower = newTag.toLowerCase();
 
-    if(!availableTags.includes(tagLower)){
-      setAvailableTags(prev=>[...prev,tagLower]);
-    }
+    const tagExists = availableTags.some(
+      t => t.name === tagLower
+      );
+
+      if(!tagExists){
+        setAvailableTags(prev => [
+          ...prev,
+          { name: tagLower, type: "custom" }
+        ]);
+      }
 
     setRules(prev=>[
       ...prev,
